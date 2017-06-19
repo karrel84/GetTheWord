@@ -24,7 +24,9 @@ import com.google.android.gms.vision.text.Text;
 import com.google.android.gms.vision.text.TextBlock;
 import com.kerrel.getthewordlibrary.camera.GraphicOverlay;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Graphic instance for rendering TextBlock position, size, and ID within an associated graphic
@@ -39,9 +41,12 @@ public class OcrGraphic extends GraphicOverlay.Graphic {
     private static Paint sRectPaint;
     private static Paint sTextPaint;
     private final TextBlock mText;
+    private Set<String> mWordList;
 
     OcrGraphic(GraphicOverlay overlay, TextBlock text) {
         super(overlay);
+
+        mWordList = new HashSet<>();
 
         mText = text;
 
@@ -110,6 +115,11 @@ public class OcrGraphic extends GraphicOverlay.Graphic {
             float left = translateX(currentText.getBoundingBox().left);
             float bottom = translateY(currentText.getBoundingBox().bottom);
             canvas.drawText(currentText.getValue(), left, bottom, sTextPaint);
+            mWordList.add(currentText.getValue());
         }
+    }
+
+    public Set<String> getWordList() {
+        return mWordList;
     }
 }

@@ -20,6 +20,8 @@ import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.view.View;
 
+import com.kerrel.getthewordlibrary.OcrGraphic;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -27,11 +29,11 @@ import java.util.Set;
  * A view which renders a series of custom graphics to be overlaid on top of an associated preview
  * (i.e., the camera preview).  The creator can add graphics objects, update the objects, and remove
  * them, triggering the appropriate drawing and invalidation within the view.<p>
- *
+ * <p>
  * Supports scaling and mirroring of the graphics relative the camera's preview properties.  The
  * idea is that detection items are expressed in terms of a preview size, but need to be scaled up
  * to the full view size, and also mirrored in the case of the front-facing camera.<p>
- *
+ * <p>
  * Associated {@link Graphic} items should use the following methods to convert to view coordinates
  * for the graphics that are drawn:
  * <ol>
@@ -49,6 +51,7 @@ public class GraphicOverlay<T extends GraphicOverlay.Graphic> extends View {
     private float mHeightScaleFactor = 1.0f;
     private int mFacing = CameraSource.CAMERA_FACING_BACK;
     private Set<T> mGraphics = new HashSet<>();
+
 
     /**
      * Base class for a custom graphics object to be rendered within the graphic overlay.  Subclass
@@ -158,6 +161,7 @@ public class GraphicOverlay<T extends GraphicOverlay.Graphic> extends View {
     /**
      * Returns the first graphic, if any, that exists at the provided absolute screen coordinates.
      * These coordinates will be offset by the relative screen position of this view.
+     *
      * @return First graphic containing the point, or null if no text is detected.
      */
     public T getGraphicAtLocation(float rawX, float rawY) {
@@ -204,5 +208,15 @@ public class GraphicOverlay<T extends GraphicOverlay.Graphic> extends View {
                 graphic.draw(canvas);
             }
         }
+    }
+
+    public Set<String> getWord() {
+        for (Graphic graphic : mGraphics) {
+            if (graphic instanceof OcrGraphic) {
+                OcrGraphic graphic1 = (OcrGraphic) graphic;
+                return graphic1.getWordList();
+            }
+        }
+        return null;
     }
 }

@@ -47,6 +47,7 @@ import com.kerrel.getthewordlibrary.camera.CameraSourcePreview;
 import com.kerrel.getthewordlibrary.camera.GraphicOverlay;
 
 import java.io.IOException;
+import java.util.Set;
 
 /**
  * Activity for the Ocr Detecting app.  This app detects text and displays the value with the
@@ -110,6 +111,8 @@ public final class OcrCaptureActivity extends AppCompatActivity {
                 .show();
 
         // TODO: Set up the Text To Speech engine.
+
+        findViewById(R.id.getTheWord).setOnClickListener(onGetWordListener);
     }
 
     /**
@@ -380,4 +383,20 @@ public final class OcrCaptureActivity extends AppCompatActivity {
             }
         }
     }
+
+    private View.OnClickListener onGetWordListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Log.e("TAG", "get the word");
+
+            Set<String> wordSet = mGraphicOverlay.getWord();
+            if (wordSet != null) {
+                for (String word : wordSet) {
+                    Log.e("TAG", "word : " + word);
+                }
+            } else {
+                Log.e("TAG", "wordSet is null");
+            }
+        }
+    };
 }
