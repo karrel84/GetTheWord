@@ -3,28 +3,24 @@ package com.kerrel.gettheword;
 import android.annotation.TargetApi;
 import android.os.Build;
 
-import org.junit.Before;
-import org.junit.Test;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
 /**
- * Example local unit test, which will execute on the development machine (host).
- *
- * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
+ * Created by 이주영 on 2017-06-21.
  */
-public class ExampleUnitTest {
-    public List<String> partList;
 
-    @Before
-    public void before() {
+public class EnglishToKorean {
+    // 품사들
+    private List<String> partList;
+    private final String dicUrl = "http://endic.naver.com/search.nhn?sLn=kr&searchOption=all&query=%s";
+
+    public EnglishToKorean() {
         partList = new ArrayList<>();
         partList.add("[명사]");
         partList.add("[동사]");
@@ -39,23 +35,8 @@ public class ExampleUnitTest {
         partList.add("[형용사]");
     }
 
-    //    @Test
-    public void plumtomato() {
-        if (Pattern.matches("^[a-zA-Z]*.*", "plum s가 tomato")) {
-            System.out.println(true);
-        } else {
-            System.out.println(false);
-        }
-
-    }
-
-    @Test
-    public void okHttps() throws IOException {
-        System.out.println(getWord("man"));
-    }
-
     public String getWord(String word) throws IOException {
-        String url = String.format("http://endic.naver.com/search.nhn?sLn=kr&searchOption=all&query=%s", word);
+        String url = String.format(dicUrl, word);
         String body = httpRun(url);
 
         // HTML 구문을 없앤다.
@@ -142,12 +123,12 @@ public class ExampleUnitTest {
         return builder;
     }
 
-    public boolean partOfSpeech(String word, String part) {
+    private boolean partOfSpeech(String word, String part) {
         return word.contains(part) && !word.equals(part);
     }
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
-    public String httpRun(String url) throws IOException {
+    private String httpRun(String url) throws IOException {
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder().url(url).build();
 

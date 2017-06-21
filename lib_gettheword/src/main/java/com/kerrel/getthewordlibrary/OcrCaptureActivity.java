@@ -47,6 +47,8 @@ import com.kerrel.getthewordlibrary.camera.CameraSourcePreview;
 import com.kerrel.getthewordlibrary.camera.GraphicOverlay;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -79,6 +81,8 @@ public final class OcrCaptureActivity extends AppCompatActivity {
     // A TextToSpeech engine for speaking a String value.
     private TextToSpeech tts;
 
+    private Set<String> mWordSet;
+
     /**
      * Initializes the UI and creates the detector pipeline.
      */
@@ -110,9 +114,8 @@ public final class OcrCaptureActivity extends AppCompatActivity {
                 Snackbar.LENGTH_LONG)
                 .show();
 
-        // TODO: Set up the Text To Speech engine.
-
-        findViewById(R.id.getTheWord).setOnClickListener(onGetWordListener);
+        mWordSet = new HashSet<>();
+        findViewById(R.id.completeCollection).setOnClickListener(onCompliteListener);
     }
 
     /**
@@ -172,7 +175,9 @@ public final class OcrCaptureActivity extends AppCompatActivity {
         TextRecognizer textRecognizer = new TextRecognizer.Builder(context).build();
 
         // TODO: Set the TextRecognizer's Processor.
-        textRecognizer.setProcessor(new OcrDetectorProcessor(mGraphicOverlay));
+        OcrDetectorProcessor processor = new OcrDetectorProcessor(mGraphicOverlay);
+        processor.setOnTextDetectedListener(onTextDetectedListener);
+        textRecognizer.setProcessor(processor);
 
         // TODO: Check if the TextRecognizer is operational.
         if (!textRecognizer.isOperational()) {
@@ -384,19 +389,37 @@ public final class OcrCaptureActivity extends AppCompatActivity {
         }
     }
 
-    private View.OnClickListener onGetWordListener = new View.OnClickListener() {
+    private OcrDetectorProcessor.OnTextDetectedListener onTextDetectedListener = new OcrDetectorProcessor.OnTextDetectedListener() {
+        @Override
+        public void onTextDetected(String text) {
+            addSet(text);
+        }
+    };
+
+    /**
+     * 단어를 추가한다.
+     */
+    private void addSet(String text) {
+        Log.e("OcrCaptureActivity", "text : " + text);
+        String[] texts = text.split(" ");
+        for (int i = 0; i < texts.length; i++) {
+            mWordSet.add(texts[i]);
+        }
+    }
+
+    /**
+     * 종료
+     */
+    private View.OnClickListener onCompliteListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            Log.e("TAG", "get the word");
+            ArrayList<String> arrayList = new ArrayList<>();
+            arrayList.addAll(mWordSet);
 
-            Set<String> wordSet = mGraphicOverlay.getWord();
-            if (wordSet != null) {
-                for (String word : wordSet) {
-                    Log.e("TAG", "word : " + word);
-                }
-            } else {
-                Log.e("TAG", "wordSet is null");
-            }
+            Intent resultData = new Intent();
+            resultData.putStringArrayListExtra("words", arrayList);
+            setResult(RESULT_OK, resultData);
+            finish();
         }
     };
 }

@@ -29,7 +29,17 @@ import com.kerrel.getthewordlibrary.camera.GraphicOverlay;
  */
 public class OcrDetectorProcessor implements Detector.Processor<TextBlock> {
 
+    interface OnTextDetectedListener {
+        void onTextDetected(String text);
+    }
+
     private GraphicOverlay<OcrGraphic> mGraphicOverlay;
+
+    private OnTextDetectedListener mOnTextDetectedListener;
+
+    public void setOnTextDetectedListener(OnTextDetectedListener onTextDetectedListener) {
+        mOnTextDetectedListener = onTextDetectedListener;
+    }
 
     OcrDetectorProcessor(GraphicOverlay<OcrGraphic> ocrGraphicOverlay) {
         mGraphicOverlay = ocrGraphicOverlay;
@@ -48,10 +58,19 @@ public class OcrDetectorProcessor implements Detector.Processor<TextBlock> {
             TextBlock item = items.valueAt(i);
             if (item != null && item.getValue() != null) {
                 Log.d("Processor", "Text detected! " + item.getValue());
+                onTextDetected(item);
             }
             OcrGraphic graphic = new OcrGraphic(mGraphicOverlay, item);
             mGraphicOverlay.add(graphic);
         }
+    }
+
+    /**
+     * 리스너를 통해 발견한 텍스트를 전달한다.
+     */
+    private void onTextDetected(TextBlock item) {
+        if (mOnTextDetectedListener != null)
+            mOnTextDetectedListener.onTextDetected(item.getValue());
     }
 
     // TODO:  Once this implements Detector.Processor<TextBlock>, implement the abstract methods.

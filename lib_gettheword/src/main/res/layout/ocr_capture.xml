@@ -20,8 +20,9 @@
 
 
     <Button
-        android:id="@+id/getTheWord"
+        android:id="@+id/completeCollection"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="단어를 가져와" />
+        android:layout_gravity="center_horizontal|bottom"
+        android:text="수집완료" />
 </FrameLayout>
