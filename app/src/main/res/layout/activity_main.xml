@@ -7,7 +7,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="4dp"
-        tools:context="com.kerrel.gettheword.MainActivity">
+        tools:context="com.kerrel.gettheword.MainActivity3">
 
         <Button
             android:id="@+id/getWords"

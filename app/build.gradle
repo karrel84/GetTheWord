@@ -27,11 +27,15 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:25.3.1'
-    compile 'com.android.support.constraint:constraint-layout:1.0.2' // 콘스트레인트 레이아웃
-    testCompile 'junit:junit:4.12'
+    // 콘스트레인트 레이아웃
     compile project(path: ':lib_gettheword')
-    compile 'com.squareup.okhttp3:okhttp:3.5.0' // 통신모듈
-    compile 'io.reactivex:rxandroid:1.1.0' // rx 안드로이드
-    compile 'com.android.support:cardview-v7:23.4.0'// 카드뷰
+    // 통신모듈
+    // rx 안드로이드
+    // 카드뷰
+    compile 'com.android.support:appcompat-v7:25.3.1'
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    compile 'com.squareup.okhttp3:okhttp:3.5.0'
+    compile 'io.reactivex:rxandroid:1.1.0'
+    compile 'com.android.support:cardview-v7:23.4.0'
+    testCompile 'junit:junit:4.12'
 }
