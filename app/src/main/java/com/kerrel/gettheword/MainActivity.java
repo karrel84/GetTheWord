@@ -1,11 +1,14 @@
 package com.kerrel.gettheword;
 
 import android.content.Intent;
+import android.databinding.DataBindingUtil;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.View;
 
+import com.kerrel.gettheword.databinding.ActivityMainBinding;
 import com.kerrel.getthewordlibrary.OcrCaptureActivity;
 
 import java.io.IOException;
@@ -21,12 +24,26 @@ import rx.schedulers.Schedulers;
 public class MainActivity extends AppCompatActivity {
 
 
+    private ActivityMainBinding mBinding;
+    private RecyclerAdapter mAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
 
-        findViewById(R.id.getWords).setOnClickListener(onGetWordsListener);
+        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+        mBinding.getWords.setOnClickListener(onGetWordsListener);
+        // 리사이클러뷰 초기화
+        setupRecyclerView();
+    }
+
+    /**
+     * 리사이클러뷰 초기화
+     */
+    private void setupRecyclerView() {
+        mAdapter = new RecyclerAdapter();
+        mBinding.recyclerView.setAdapter(mAdapter);
+        mBinding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
     private View.OnClickListener onGetWordsListener = new View.OnClickListener() {
@@ -52,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
      * 수집한 단어를 보여줘
      */
     private void showWords(ArrayList<String> wordsList) {
+        mAdapter.removeItems();
         for (final String word : wordsList) {
             if (regularExpression(word)) {
 
@@ -64,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
                                 if (!s.isEmpty()) {
                                     Log.e("TAG", word);
                                     Log.d("TAG", s);
+                                    mAdapter.addItem(new WordItem(word, s));
                                 }
                             }
                         });
